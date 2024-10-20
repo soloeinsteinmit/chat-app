@@ -7,24 +7,25 @@ import {
   createRoutesFromElements,
 } from "react-router-dom";
 import Chat from "./pages/Chat";
-import Signup from "./pages/Signup";
-import Login from "./pages/Login";
+import Authentication from "./pages/Authentication";
 import OutletContainer from "./layout/OutletContainer";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
 
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<OutletContainer />}>
         <Route index element={<Chat />} />
-        <Route path="signup" element={<Signup />} />
-        <Route path="login" element={<Login />} />
+        <Route path="auth" element={<Authentication />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Route>
     )
   );
   return (
     <NextUIProvider>
-      <RouterProvider router={router} />
+      <NextThemesProvider attribute="class" defaultTheme="dark">
+        <RouterProvider router={router} />
+      </NextThemesProvider>
     </NextUIProvider>
   );
 }
