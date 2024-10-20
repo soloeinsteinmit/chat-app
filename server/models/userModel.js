@@ -1,7 +1,13 @@
 const e = require("express");
 const mongoose = require("mongoose");
+
 /**
  * User schema
+ *
+ * @typedef {Object} User
+ * @property {string} username - The username of the user.
+ * @property {string} email - The email of the user.
+ * @property {string} password - The password of the user.
  */
 const userSchema = new mongoose.Schema(
   {
