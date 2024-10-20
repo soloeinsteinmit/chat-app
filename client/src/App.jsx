@@ -10,6 +10,7 @@ import Chat from "./pages/Chat";
 import Authentication from "./pages/Authentication";
 import OutletContainer from "./layout/OutletContainer";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { AuthContextProvider } from "./context/AuthContext";
 
 function App() {
   const router = createBrowserRouter(
@@ -24,7 +25,9 @@ function App() {
   return (
     <NextUIProvider>
       <NextThemesProvider attribute="class" defaultTheme="dark">
-        <RouterProvider router={router} />
+        <AuthContextProvider>
+          <RouterProvider router={router} />
+        </AuthContextProvider>
       </NextThemesProvider>
     </NextUIProvider>
   );
