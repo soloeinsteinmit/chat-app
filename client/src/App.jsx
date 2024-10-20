@@ -1,5 +1,4 @@
-import "./App.css";
-import { Button, NextUIProvider } from "@nextui-org/react";
+import { NextUIProvider } from "@nextui-org/react";
 
 function App() {
   return (
