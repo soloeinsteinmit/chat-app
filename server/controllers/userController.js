@@ -57,4 +57,34 @@ const signupUser = async (req, res) => {
   }
 };
 
-module.exports = { signupUser };
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    let user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ message: "User does not exist" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials " });
+    }
+
+    const token = createToken(user._id);
+
+    res.status(200).json({
+      _id: user._id,
+      username: user.username,
+      email,
+      token,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { signupUser, loginUser };
