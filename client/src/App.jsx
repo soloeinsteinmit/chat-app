@@ -13,6 +13,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { AuthContext, AuthContextProvider } from "./context/AuthContext";
 import { useContext } from "react";
 import ChatScreenLayout from "./layout/ChatScreenLayout";
+import { ChatContextProvider } from "./context/ChatContext";
 
 function App() {
   const { user } = useContext(AuthContext);
@@ -34,7 +35,9 @@ function App() {
   return (
     <NextUIProvider>
       <NextThemesProvider attribute="class" defaultTheme="dark">
-        <RouterProvider router={router} />
+        <ChatContextProvider user={user}>
+          <RouterProvider router={router} />
+        </ChatContextProvider>
       </NextThemesProvider>
     </NextUIProvider>
   );

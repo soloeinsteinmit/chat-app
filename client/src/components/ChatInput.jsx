@@ -67,7 +67,7 @@ const ChatInput = () => {
   };
 
   return (
-    <div className="flex-shrink-0 sticky bottom-0 left-0  w-full z-50 flex py-5 pl-5 justify-center items-center bg-content2 border-t border-divider">
+    <div className="flex-shrink-0 sticky bottom-0 left-0  w-full z-50 flex py-5 pl-5 justify-center items-center bg-content1 border-t border-divider">
       <Textarea
         className=" w-full transition mr-2"
         onKeyDown={handleKeyPress}

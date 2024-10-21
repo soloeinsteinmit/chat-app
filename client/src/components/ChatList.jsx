@@ -4,6 +4,9 @@ import { TbLogout2 } from "react-icons/tb";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import ChatCard from "./chat-card";
+import { ChatContext } from "../context/ChatContext";
+import ChatSkeleton from "./chat-skeleton";
+import { useFetchFriends } from "../hooks/fetchFriends";
 
 /**
  * A simple component that displays a user avatar and name
@@ -11,7 +14,18 @@ import ChatCard from "./chat-card";
  * @returns {ReactElement} A JSX Element
  */
 const ChatList = () => {
+  const { userChats, isChatLoading, chatsError } = useContext(ChatContext);
   const { user, logoutUser } = useContext(AuthContext);
+
+  const { friends } = useFetchFriends(userChats, user);
+
+  console.log("userChats->", userChats);
+
+  console.log("friends->", friends);
+
+  if (chatsError) {
+    return <div>{chatsError}</div>;
+  }
   return (
     <div className="border-r border-divider w-1/4  overflow-y-auto">
       <div className="flex justify-between items p-4 bg-content1">
@@ -45,8 +59,27 @@ const ChatList = () => {
           Create New Chat
         </Button>
         <div className="flex flex-col">
-          <ChatCard />
-          <ChatCard />
+          {isChatLoading ? (
+            <div className="flex flex-col gap-3">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => {
+                return <ChatSkeleton key={item} />;
+              })}
+            </div>
+          ) : (
+            <>
+              {friends?.map((friend) => {
+                return (
+                  <ChatCard
+                    key={friend._id}
+                    name={friend?.username}
+                    // message={chat?.lastMessage?.text}
+                    // time={chat?.lastMessage?.createdAt}
+                    // profileImage={friend?.profileImage}
+                  />
+                );
+              })}
+            </>
+          )}
         </div>
       </div>
     </div>

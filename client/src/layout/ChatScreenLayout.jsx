@@ -1,11 +1,11 @@
-import ChatContainer from "../components/ChatContainer";
+import Chat from "../pages/Chat";
 import ChatList from "../components/ChatList";
 
 const ChatScreenLayout = () => {
   return (
     <div className="flex h-screen overflow-hidden">
       <ChatList />
-      <ChatContainer />
+      <Chat />
     </div>
   );
 };

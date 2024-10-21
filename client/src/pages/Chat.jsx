@@ -1,20 +1,17 @@
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { Button } from "@nextui-org/react";
-import { Navigate } from "react-router-dom";
+import ChatInfoContainer from "../components/ChatInfoContainer";
+import MessagesScreen from "../components/MessagesScreen";
 
 const Chat = () => {
-  const { user, logoutUser } = useContext(AuthContext);
-
-  // if user is not logged in, redirect to auth page
-  if (!user) {
-    return <Navigate to="/auth" />;
-  }
-
   return (
-    <div>
-      <h1>welcome to Chatterbox {user?.username}</h1>
-      <Button onClick={() => logoutUser()}>Logout</Button>
+    <div className="flex-grow flex w-full overflow-y-auto">
+      {/* Scrollable Messages Screen */}
+
+      <MessagesScreen />
+
+      {/* Sticky Chat Info Container */}
+      <div className="chat-info-container w-72 sticky top-0 h-screen">
+        <ChatInfoContainer />
+      </div>
     </div>
   );
 };

@@ -8,7 +8,7 @@ const ChatHeader = ({
   name = "CobbyTrade",
 }) => {
   return (
-    <div className="flex-shrink-0 fixed top-0 bg-content2 border-b border-divider px-4 py-4 flex items-center justify-between w-[60%]">
+    <div className="flex-shrink-0 fixed top-0 bg-content1 border-b border-divider px-4 py-4 flex items-center justify-between w-[60%]">
       <div className="flex items-center gap-2">
         <Avatar radius="full" src={profileImage} size="md" />
         <span className="text-sm">{name}</span>
