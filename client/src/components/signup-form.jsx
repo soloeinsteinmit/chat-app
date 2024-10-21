@@ -34,11 +34,11 @@ const SignupForm = ({ setSelected }) => {
    */
   const handleSignup = async (e) => {
     e.preventDefault();
-    await signupUser(e);
+    const isSignedUp = await signupUser(e);
 
-    // If there is no signup error, redirect to the chat page
-    if (!signupError) {
+    if (isSignedUp && !signupError) {
       navigate("/");
+
     }
   };
 
@@ -48,11 +48,13 @@ const SignupForm = ({ setSelected }) => {
         <Input
           key={input.id}
           isRequired
+          isClearable
           label={input.label}
           placeholder={`Enter your ${input.label.toLowerCase()}`}
           type={input.type}
           value={signupInfo[input.id]}
           onChange={(e) => updateSignupInfo(input.id, e.target.value)}
+          onClear={() => updateSignupInfo(input.id, "")}
         />
       ))}
 
