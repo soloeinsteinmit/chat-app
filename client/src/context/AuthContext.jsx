@@ -1,5 +1,5 @@
 import { createContext, useCallback, useEffect, useState } from "react";
-import { signup } from "../services/auth-services";
+import { login, signup } from "../services/auth-services";
 
 export const AuthContext = createContext();
 
@@ -7,14 +7,17 @@ export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [signupError, setSignupError] = useState(null);
+  const [loginError, setLoginError] = useState(null);
+  const [loginInfo, setLoginInfo] = useState({ email: "", password: "" });
   const [signupInfo, setSignupInfo] = useState({
     username: "",
     email: "",
     password: "",
   });
 
-  console.log(`signupInfo -> ${JSON.stringify(signupInfo)}`);
-  console.log(`user -> ${JSON.stringify(user)}`);
+  // console.log(`signupInfo -> ${JSON.stringify(signupInfo)}`);
+  // console.log(`loginInfo -> ${JSON.stringify(loginInfo)}`);
+  // console.log(`user -> ${JSON.stringify(user)}`);
 
   // Check if user is stored in localStorage
   useEffect(() => {
@@ -24,10 +27,17 @@ export const AuthContextProvider = ({ children }) => {
     }
   }, []);
 
+  // Update signup info
   const updateSignupInfo = useCallback((key, value) => {
     setSignupInfo((prevInfo) => ({ ...prevInfo, [key]: value }));
   }, []);
 
+  // Update login info
+  const updateLoginInfo = useCallback((key, value) => {
+    setLoginInfo((prevInfo) => ({ ...prevInfo, [key]: value }));
+  }, []);
+
+  // Signup user
   const signupUser = useCallback(
     async (e) => {
       e.preventDefault();
@@ -39,8 +49,6 @@ export const AuthContextProvider = ({ children }) => {
           signupInfo.email,
           signupInfo.password
         );
-
-        console.log(`signupInfo response -> ${JSON.stringify(response)}`);
 
         if (response.error) {
           setLoading(false);
@@ -65,6 +73,32 @@ export const AuthContextProvider = ({ children }) => {
     [signupInfo]
   );
 
+  // Login user
+  const loginUser = useCallback(
+    async (e) => {
+      try {
+        e.preventDefault();
+        setLoading(true);
+        const response = await login(loginInfo.email, loginInfo.password);
+
+        if (response.error) {
+          setLoading(false);
+          setLoginError(response.error);
+        } else {
+          localStorage.setItem("User", JSON.stringify(response));
+          setUser(response);
+          setLoginInfo({ email: "", password: "" });
+          setLoginError(null);
+          setLoading(false);
+        }
+      } catch (error) {
+        setLoginError(error.message);
+        setLoading(false);
+      }
+    },
+    [loginInfo]
+  );
+
   // Logout user
   // Remove user from localStorage
   const logoutUser = useCallback(() => {
@@ -77,9 +111,13 @@ export const AuthContextProvider = ({ children }) => {
       value={{
         user,
         signupInfo,
+        loginInfo,
         updateSignupInfo,
+        updateLoginInfo,
         signupUser,
+        loginUser,
         signupError,
+        loginError,
         setUser,
         loading,
         logoutUser,

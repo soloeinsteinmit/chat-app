@@ -21,10 +21,7 @@ function App() {
       <Route path="/" element={<OutletContainer />}>
         <Route index element={user ? <Chat /> : <Authentication />} />
         <Route path="chat" element={<Chat />} />
-        <Route
-          path={user ? "chat" : "auth"}
-          element={user ? <Chat /> : <Authentication />}
-        />
+        <Route path="auth" element={<Authentication />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Route>
     )

@@ -25,10 +25,20 @@ const SignupForm = ({ setSelected }) => {
       type: "password",
     },
   ];
+
   const navigate = useNavigate();
+  /**
+   * Handles the submission of the signup form. Calls `signupUser` from the
+   * `AuthContext` and redirects the user to the chat page.
+   * @param {Event} e The form submission event.
+   */
   const handleSignup = (e) => {
     signupUser(e);
-    navigate("/chat");
+
+    // If there is no signup error, redirect to the chat page
+    if (!signupError) {
+      navigate("/chat");
+    }
   };
 
   return (
