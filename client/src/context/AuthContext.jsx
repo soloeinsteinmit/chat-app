@@ -3,6 +3,25 @@ import { login, signup } from "../services/auth-services";
 
 export const AuthContext = createContext();
 
+/**
+ * The AuthContextProvider component provides the AuthContext to its children.
+ * It manages the state of user authentication and provides functions to
+ * signup, login and logout users.
+ *
+ * The context contains the following values:
+ * - user: the currently logged in user
+ * - signupInfo: the information entered by the user during signup
+ * - loginInfo: the information entered by the user during login
+ * - updateSignupInfo: a function to update the signup info
+ * - updateLoginInfo: a function to update the login info
+ * - signupUser: a function to signup a user
+ * - loginUser: a function to login a user
+ * - signupError: the error message if signup fails
+ * - loginError: the error message if login fails
+ * - setUser: a function to set the currently logged in user
+ * - loading: a boolean indicating whether a request is in progress
+ * - logoutUser: a function to logout the user
+ */
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);

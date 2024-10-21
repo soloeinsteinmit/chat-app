@@ -32,8 +32,9 @@ const SignupForm = ({ setSelected }) => {
    * `AuthContext` and redirects the user to the chat page.
    * @param {Event} e The form submission event.
    */
-  const handleSignup = (e) => {
-    signupUser(e);
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    await signupUser(e);
 
     // If there is no signup error, redirect to the chat page
     if (!signupError) {
