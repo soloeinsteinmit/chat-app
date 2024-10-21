@@ -11,7 +11,11 @@ const uri = process.env.MONGO_DB_URI;
 
 // Middlewares
 app.use(express.json());
-app.use(cors());
+const corsOptions = {
+  methods: "GET,POST,PUT,DELETE",
+  allowedHeaders: "Content-Type,Authorization",
+};
+app.use(cors(corsOptions));
 app.use("/api/users", userRoute);
 
 app.listen(port, (req, res) => {

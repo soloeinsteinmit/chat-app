@@ -1,7 +1,16 @@
-import React from "react";
 import styled from "styled-components";
+import { FaCircleExclamation } from "react-icons/fa6";
 
-const ErrorAlert = () => {
+export const ErrorText = ({ errorText = "Something went wrong" }) => {
+  return (
+    <div className="text-danger-500 text-center flex gap-1 items-center justify-center">
+      <FaCircleExclamation className="text-lg" />
+      <span className="text-sm">{errorText}</span>
+    </div>
+  );
+};
+
+export const ErrorAlert = () => {
   return (
     <StyledWrapper>
       <div className="card">
