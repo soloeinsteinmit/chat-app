@@ -1,4 +1,3 @@
-// TODO: createChat, getChats, findChat
 const chatModel = require("../models/chatModel");
 
 /**
