@@ -38,7 +38,7 @@ const SignupForm = ({ setSelected }) => {
 
     // If there is no signup error, redirect to the chat page
     if (!signupError) {
-      navigate("/chat");
+      navigate("/");
     }
   };
 

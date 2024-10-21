@@ -20,7 +20,6 @@ function App() {
     createRoutesFromElements(
       <Route path="/" element={<OutletContainer />}>
         <Route index element={user ? <Chat /> : <Authentication />} />
-        <Route path="chat" element={<Chat />} />
         <Route path="auth" element={<Authentication />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Route>
