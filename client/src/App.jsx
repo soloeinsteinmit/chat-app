@@ -1,12 +1,37 @@
-import "./App.css";
-import { Button, NextUIProvider } from "@nextui-org/react";
+import { NextUIProvider } from "@nextui-org/react";
+import {
+  Route,
+  Navigate,
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+} from "react-router-dom";
+import Chat from "./pages/Chat";
+import Authentication from "./pages/Authentication";
+import OutletContainer from "./layout/OutletContainer";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { AuthContext, AuthContextProvider } from "./context/AuthContext";
+import { useContext } from "react";
 
 function App() {
+  const { user } = useContext(AuthContext);
+
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route path="/" element={<OutletContainer />}>
+        <Route index element={user ? <Chat /> : <Authentication />} />
+        <Route path="chat" element={<Chat />} />
+        <Route path="auth" element={<Authentication />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Route>
+    )
+  );
+
   return (
     <NextUIProvider>
-      <div className="flex items-center justify-center px-auto w-full h-dvh">
-        <h1 className="text-6xl font-bold">Chatterbox 💬</h1>
-      </div>
+      <NextThemesProvider attribute="class" defaultTheme="dark">
+        <RouterProvider router={router} />
+      </NextThemesProvider>
     </NextUIProvider>
   );
 }

@@ -16,59 +16,65 @@ const createToken = (_id) => {
 };
 
 /**
- * Registers a new user by validating the input fields and saving the user data to the database.
+ * Registers a new user after validation and hashing the password.
  *
- * @param {Object} req - The request object containing the user's information (username, email, password).
+ * @param {Object} req - The request object containing the username, email, and password.
  * @param {Object} res - The response object to send the registration response.
- *
- * @returns {void} Sends a JSON response with the new user's information or an error message.
+ * @returns {void} - Sends the new user's data or an error message.
  */
 const signupUser = async (req, res) => {
+  // console.log("Request Body:", req.body); // Log request data
   try {
     const { username, email, password } = req.body;
 
-    let user = await userModel.findOne({ email });
-
-    if (user) return res.status(400).json({ message: "User already exists" });
-
-    /**
-     * Validate username, email and password
-     */
+    // Basic validation
     if (!username || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
+      return res.status(400).json({ message: "All fields are required." });
     }
 
-    /**
-     * Validate email
-     */
+    // Email validation
     if (!validator.isEmail(email)) {
-      return res.status(400).json({ message: "Invalid email" });
+      return res.status(400).json({ message: "Invalid email." });
     }
 
-    /**
-     * Validate password
-     */
+    // Password validation
     if (!validator.isStrongPassword(password)) {
-      return res.status(400).json({ message: "Password is not strong enough" });
+      return res.status(400).json({
+        message: "Password: 8+ characters (Aa123$).",
+      });
     }
 
+    // Check if user already exists
+    let userExists = await userModel.findOne({ email });
+    if (userExists) {
+      return res.status(409).json({ message: "User already exists." });
+    }
+
+    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    user = new userModel({ username, email, password: hashedPassword });
-    await user.save();
-
-    const token = createToken(user._id);
-
-    res.status(201).json({
-      _id: user._id,
+    // Create new user
+    const newUser = new userModel({
       username,
       email,
+      password: hashedPassword,
+    });
+    await newUser.save();
+
+    // Generate token
+    const token = createToken(newUser._id);
+
+    // Respond with user details
+    res.status(201).json({
+      _id: newUser._id,
+      username: newUser.username,
+      email: newUser.email,
       token,
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Server error: Please try again later." });
   }
 };
 
@@ -83,6 +89,10 @@ const signupUser = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
     let user = await userModel.findOne({ email });
 
