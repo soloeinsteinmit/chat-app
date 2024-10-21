@@ -37,8 +37,8 @@ const SignupForm = ({ setSelected }) => {
     const isSignedUp = await signupUser(e);
 
     // If there is no signup error, redirect to the chat page
-    if (!signupError) {
-      navigate("/");
+    if (isSignedUp && !signupError) {
+      navigate("/chat");
     }
   };
 
