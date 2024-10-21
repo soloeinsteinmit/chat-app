@@ -32,8 +32,9 @@ const LoginForm = ({ setSelected }) => {
    * Calls `loginUser` from the `AuthContext` and redirects the user to the chat page.
    * @param {Event} e The form submission event.
    */
-  const handleLogin = (e) => {
-    loginUser(e);
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    await loginUser(e);
 
     // If there is no login error, redirect to the chat page
     if (!loginError) {
