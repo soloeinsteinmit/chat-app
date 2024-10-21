@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const userRoute = require("./routes/userRoute");
+const chatRoute = require("./routes/chatRoute");
 
 // Initializations
 const app = express();
@@ -17,6 +18,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.use("/api/users", userRoute);
+app.use("/api/chats", chatRoute);
 
 app.listen(port, (req, res) => {
   console.log(`Listening on port ${port}`);

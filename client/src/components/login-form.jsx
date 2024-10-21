@@ -45,7 +45,8 @@ const LoginForm = ({ setSelected }) => {
 
     // If login is successful, navigate to the chat page
     if (isLoggedIn && !loginError) {
-      navigate("/chat");
+      navigate("/");
+
     }
   };
 
