@@ -36,9 +36,9 @@ const SignupForm = ({ setSelected }) => {
     e.preventDefault();
     const isSignedUp = await signupUser(e);
 
+
     if (isSignedUp && !signupError) {
       navigate("/");
-
     }
   };
 
