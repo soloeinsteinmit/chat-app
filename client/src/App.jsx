@@ -10,24 +10,30 @@ import Chat from "./pages/Chat";
 import Authentication from "./pages/Authentication";
 import OutletContainer from "./layout/OutletContainer";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { AuthContextProvider } from "./context/AuthContext";
+import { AuthContext, AuthContextProvider } from "./context/AuthContext";
+import { useContext } from "react";
 
 function App() {
+  const { user } = useContext(AuthContext);
+
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<OutletContainer />}>
-        <Route index element={<Chat />} />
-        <Route path="auth" element={<Authentication />} />
+        <Route index element={user ? <Chat /> : <Authentication />} />
+        <Route path="chat" element={<Chat />} />
+        <Route
+          path={user ? "chat" : "auth"}
+          element={user ? <Chat /> : <Authentication />}
+        />
         <Route path="*" element={<Navigate to="/" />} />
       </Route>
     )
   );
+
   return (
     <NextUIProvider>
       <NextThemesProvider attribute="class" defaultTheme="dark">
-        <AuthContextProvider>
-          <RouterProvider router={router} />
-        </AuthContextProvider>
+        <RouterProvider router={router} />
       </NextThemesProvider>
     </NextUIProvider>
   );

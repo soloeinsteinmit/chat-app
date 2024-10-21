@@ -1,22 +1,17 @@
 import { Button, Input, Link } from "@nextui-org/react";
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { ErrorText } from "./error-alert";
+import { useNavigate } from "react-router-dom";
 
 const SignupForm = ({ setSelected }) => {
-  const { signupInfo, updateSignupInfo } = useContext(AuthContext);
-
-  const handleSignup = (e) => {
-    e.preventDefault();
-    const navigate = useNavigate();
-    navigate("/");
-  };
+  const { signupInfo, updateSignupInfo, signupUser, signupError, loading } =
+    useContext(AuthContext);
 
   const inputsData = [
     {
       id: "username",
-      label: "Userame",
+      label: "Username",
       type: "text",
     },
     {
@@ -30,16 +25,22 @@ const SignupForm = ({ setSelected }) => {
       type: "password",
     },
   ];
+  const navigate = useNavigate();
+  const handleSignup = (e) => {
+    signupUser(e);
+    navigate("/chat");
+  };
 
   return (
-    <form className="flex flex-col gap-4 h-[300px]">
+    <form className="flex flex-col gap-4 h-[300px]" onSubmit={handleSignup}>
       {inputsData.map((input) => (
         <Input
           key={input.id}
           isRequired
           label={input.label}
-          placeholder={`Enter your ${input.type}`}
+          placeholder={`Enter your ${input.label.toLowerCase()}`}
           type={input.type}
+          value={signupInfo[input.id]}
           onChange={(e) => updateSignupInfo(input.id, e.target.value)}
         />
       ))}
@@ -51,10 +52,11 @@ const SignupForm = ({ setSelected }) => {
         </Link>
       </p>
       <div className="flex gap-2 justify-end">
-        <Button type="submit" onClick={handleSignup} fullWidth color="primary">
-          Sign up
+        <Button type="submit" fullWidth color="primary" isLoading={loading}>
+          {loading ? "Signing you up🚀..." : "Sign up"}
         </Button>
       </div>
+      {signupError && <ErrorText errorText={signupError} />}
     </form>
   );
 };
