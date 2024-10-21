@@ -40,8 +40,7 @@ const signupUser = async (req, res) => {
     // Password validation
     if (!validator.isStrongPassword(password)) {
       return res.status(400).json({
-        message:
-          "Password must be at least 8 characters long and contain uppercase, lowercase, numbers, and symbols.",
+        message: "Password: 8+ characters (Aa123$).",
       });
     }
 
