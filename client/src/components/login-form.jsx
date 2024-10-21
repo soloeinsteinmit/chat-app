@@ -1,7 +1,10 @@
 import { Button, Input, Link } from "@nextui-org/react";
 import { useContext, useState } from "react";
 import { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import { ErrorText } from "./error-alert";
 import { AuthContext } from "../context/AuthContext";
 import { ErrorText } from "./error-alert";
 
@@ -10,14 +13,17 @@ import { ErrorText } from "./error-alert";
  * It provides input fields for email and password,
  * along with a login button.
  */
+/**
+ * LoginForm component handles user login functionality.
+ * It provides input fields for email and password,
+ * along with a login button.
+ */
 const LoginForm = ({ setSelected }) => {
   const { loginError, loginUser, loading, updateLoginInfo, loginInfo } =
     useContext(AuthContext);
-  const [isVisible, setIsVisible] = useState(false);
 
-  const toggleVisibility = () => setIsVisible(!isVisible);
+  // TODO: show/hide password
   const [isVisible, setIsVisible] = useState(false);
-
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   const inputsData = [
@@ -47,8 +53,6 @@ const LoginForm = ({ setSelected }) => {
 
     const isLoggedIn = await loginUser(e);
 
-    const isLoggedIn = await loginUser(e);
-
     // If login is successful, navigate to the chat page
     if (isLoggedIn && !loginError) {
       navigate("/chat");
@@ -57,18 +61,17 @@ const LoginForm = ({ setSelected }) => {
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleLogin}>
+    <form className="flex flex-col gap-4" onSubmit={handleLogin}>
       {inputsData.map((input) => (
         <Input
           key={input.id}
           isRequired
-          isClearable
           isClearable
           label={input.label}
           placeholder={`Enter your ${input.type}`}
           type={input.type}
           value={loginInfo[input.id]}
           onChange={(e) => updateLoginInfo(input.id, e.target.value)}
-          onClear={() => updateLoginInfo(input.id, "")}
           onClear={() => updateLoginInfo(input.id, "")}
         />
       ))}
@@ -82,8 +85,12 @@ const LoginForm = ({ setSelected }) => {
       <div className="flex gap-2 justify-end">
         <Button type="submit" fullWidth color="primary" isLoading={loading}>
           {loading ? "Logging in🚀..." : "Login"}
+        <Button type="submit" fullWidth color="primary" isLoading={loading}>
+          {loading ? "Logging in🚀..." : "Login"}
         </Button>
       </div>
+
+      {loginError && <ErrorText errorText={loginError} />}
 
       {loginError && <ErrorText errorText={loginError} />}
     </form>

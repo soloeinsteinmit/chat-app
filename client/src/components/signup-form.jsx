@@ -1,16 +1,22 @@
 import { Button, Input, Link } from "@nextui-org/react";
 import React, { useContext } from "react";
+import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { ErrorText } from "./error-alert";
+import { useNavigate } from "react-router-dom";
 import { ErrorText } from "./error-alert";
 import { useNavigate } from "react-router-dom";
 
 const SignupForm = ({ setSelected }) => {
   const { signupInfo, updateSignupInfo, signupUser, signupError, loading } =
     useContext(AuthContext);
+  const { signupInfo, updateSignupInfo, signupUser, signupError, loading } =
+    useContext(AuthContext);
 
   const inputsData = [
     {
       id: "username",
+      label: "Username",
       label: "Username",
       type: "text",
     },
@@ -38,22 +44,27 @@ const SignupForm = ({ setSelected }) => {
 
     // If there is no signup error, redirect to the chat page
     if (isSignedUp && !signupError) {
-      navigate("/chat");
+      navigate("/");
     }
   };
 
   return (
+    <form className="flex flex-col gap-4 h-[300px]" onSubmit={handleSignup}>
     <form className="flex flex-col gap-4 h-[300px]" onSubmit={handleSignup}>
       {inputsData.map((input) => (
         <Input
           key={input.id}
           isRequired
           isClearable
+          isClearable
           label={input.label}
+          placeholder={`Enter your ${input.label.toLowerCase()}`}
           placeholder={`Enter your ${input.label.toLowerCase()}`}
           type={input.type}
           value={signupInfo[input.id]}
+          value={signupInfo[input.id]}
           onChange={(e) => updateSignupInfo(input.id, e.target.value)}
+          onClear={() => updateSignupInfo(input.id, "")}
           onClear={() => updateSignupInfo(input.id, "")}
         />
       ))}
@@ -67,8 +78,11 @@ const SignupForm = ({ setSelected }) => {
       <div className="flex gap-2 justify-end">
         <Button type="submit" fullWidth color="primary" isLoading={loading}>
           {loading ? "Signing you up🚀..." : "Sign up"}
+        <Button type="submit" fullWidth color="primary" isLoading={loading}>
+          {loading ? "Signing you up🚀..." : "Sign up"}
         </Button>
       </div>
+      {signupError && <ErrorText errorText={signupError} />}
       {signupError && <ErrorText errorText={signupError} />}
     </form>
   );
