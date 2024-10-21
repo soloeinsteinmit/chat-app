@@ -1,11 +1,21 @@
+import { useContext } from "react";
 import { AuroraBackground } from "../components/aurora-background";
 import AuthForm from "../components/auth-form";
 import ChatterboxCard from "../components/chatterbox-card";
 import EmojiCard from "../components/emoji-cards";
 import SocialCard from "../components/social-card";
 import UsersCard from "../components/users-card";
+import { AuthContext } from "../context/AuthContext";
+import { Navigate } from "react-router-dom";
 
 const Authentication = () => {
+  const { user } = useContext(AuthContext);
+
+  // if user is logged in, redirect to chat page
+  if (user) {
+    return <Navigate to="/chat" />;
+  }
+
   return (
     <AuroraBackground>
       <div className="flex flex-col items-center justify-center gap-9 w-full h-full relative">
