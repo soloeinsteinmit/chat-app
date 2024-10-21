@@ -43,9 +43,9 @@ const LoginForm = ({ setSelected }) => {
 
     const isLoggedIn = await loginUser(e);
 
-    // If login is successful, navigate to the chat page
-    if (isLoggedIn && !loginError) {
-      navigate("/chat");
+    // If there is no login error, redirect to the chat page
+    if (!loginError) {
+      navigate("/");
     }
   };
 
