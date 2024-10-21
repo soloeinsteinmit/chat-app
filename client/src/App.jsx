@@ -12,6 +12,7 @@ import OutletContainer from "./layout/OutletContainer";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { AuthContext, AuthContextProvider } from "./context/AuthContext";
 import { useContext } from "react";
+import ChatScreenLayout from "./layout/ChatScreenLayout";
 
 function App() {
   const { user } = useContext(AuthContext);
@@ -19,9 +20,13 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<OutletContainer />}>
-        <Route index element={user ? <Chat /> : <Authentication />} />
+        <Route
+          index
+          element={user ? <ChatScreenLayout /> : <Authentication />}
+        />
         <Route path="auth" element={<Authentication />} />
         <Route path="*" element={<Navigate to="/" />} />
+        {/* <Route path="/" element={<ChatScreenLayout />}></Route> */}
       </Route>
     )
   );
