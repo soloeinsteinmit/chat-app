@@ -1,22 +1,18 @@
 import { Button, Input, Link } from "@nextui-org/react";
-import React, { useContext } from "react";
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { ErrorText } from "./error-alert";
 import { useNavigate } from "react-router-dom";
-import { ErrorText } from "./error-alert";
-import { useNavigate } from "react-router-dom";
 
-  /**
-   * Handles user signup functionality.
-   * It provides input fields for username, email and password,
-   * along with a signup button.
-   * @param {function} setSelected A function to set the currently selected
-   * form (login or signup).
-   * @returns {JSX.Element} The signup form component.
-   */
+/**
+ * Handles user signup functionality.
+ * It provides input fields for username, email and password,
+ * along with a signup button.
+ * @param {function} setSelected A function to set the currently selected
+ * form (login or signup).
+ * @returns {JSX.Element} The signup form component.
+ */
 const SignupForm = ({ setSelected }) => {
-  
   const { signupInfo, updateSignupInfo, signupUser, signupError, loading } =
     useContext(AuthContext);
 
@@ -78,12 +74,10 @@ const SignupForm = ({ setSelected }) => {
         </Link>
       </p>
       <div className="flex gap-2 justify-end">
-        
         <Button type="submit" fullWidth color="primary" isLoading={loading}>
           {loading ? "Signing you up🚀..." : "Sign up"}
         </Button>
       </div>
-      {signupError && <ErrorText errorText={signupError} />}
       {signupError && <ErrorText errorText={signupError} />}
     </form>
   );

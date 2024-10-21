@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { ErrorText } from "./error-alert";
 
-
 /**
  * LoginForm component handles user login functionality.
  * It provides input fields for email and password,
@@ -76,12 +75,8 @@ const LoginForm = ({ setSelected }) => {
       <div className="flex gap-2 justify-end">
         <Button type="submit" fullWidth color="primary" isLoading={loading}>
           {loading ? "Logging in🚀..." : "Login"}
-        <Button type="submit" fullWidth color="primary" isLoading={loading}>
-          {loading ? "Logging in🚀..." : "Login"}
         </Button>
       </div>
-
-      {loginError && <ErrorText errorText={loginError} />}
 
       {loginError && <ErrorText errorText={loginError} />}
     </form>
@@ -145,4 +140,3 @@ export const EyeFilledIcon = (props) => (
     />
   </svg>
 );
-
