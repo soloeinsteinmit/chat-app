@@ -38,7 +38,7 @@ const LoginForm = ({ setSelected }) => {
 
     // If there is no login error, redirect to the chat page
     if (!loginError) {
-      navigate("/chat");
+      navigate("/");
     }
   };
 
