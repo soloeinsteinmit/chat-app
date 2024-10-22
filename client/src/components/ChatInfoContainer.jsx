@@ -2,12 +2,16 @@ import { Avatar, Badge } from "@nextui-org/react";
 import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { randomImage } from "../utils/avatar-images";
+import { Notifications } from "./Notifications";
 
 const ChatInfoContainer = ({ profileImage = randomImage() }) => {
   const { user } = useContext(AuthContext);
 
   return (
     <div className="w-full border-l h-screen border-divider p-4">
+      <div className="p-4  flex items-center justify-end">
+        <Notifications />
+      </div>
       <div className="flex flex-col items-center justify-center gap-2">
         <Badge
           content=""

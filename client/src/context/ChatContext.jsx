@@ -21,6 +21,8 @@ export const ChatContextProvider = ({ children, user }) => {
   const [newMessage, setNewMessage] = useState(null);
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
 
   //initalize socket
   useEffect(() => {
@@ -57,7 +59,7 @@ export const ChatContextProvider = ({ children, user }) => {
 
   // console.log("newMessage -> ", newMessage);
 
-  //receive message from socket
+  //receive message  and notification from socket
   useEffect(() => {
     if (socket === null) return;
     socket.on("getMessage", (res) => {
@@ -66,10 +68,31 @@ export const ChatContextProvider = ({ children, user }) => {
       }
       setMessages((prevMessages) => [...prevMessages, res]);
     });
+
+    socket.on("getNotification", (res) => {
+      // check if chat is currently open
+      // if equal chat is currently open
+      const isChatOpened = currentChat?.members.some(
+        (id) => id === res.senderId
+      );
+
+      // if chat is opened mark as read
+      if (isChatOpened) {
+        setNotifications((prevNotification) => [
+          { ...res, isRead: true },
+          ...prevNotification,
+        ]);
+      } else {
+        setNotifications((prevNotification) => [...prevNotification, res]);
+      }
+    });
+
     return () => {
       socket.off("getMessage");
+      socket.off("getNotification");
     };
   }, [socket, currentChat]);
+  console.log("notifications -> ", notifications);
 
   useEffect(() => {
     if (socket === null || currentChat === null) return;
@@ -110,6 +133,7 @@ export const ChatContextProvider = ({ children, user }) => {
         });
 
         setPotentialFriend(potentialFriend);
+        setAllUsers(response.data);
         setLoadingFriends(false);
       } catch (error) {
         setLoadingFriends(false);
@@ -244,6 +268,8 @@ export const ChatContextProvider = ({ children, user }) => {
         socket,
         onlineUsers,
         setCurrentChat,
+        notifications,
+        allUsers,
       }}
     >
       {children}

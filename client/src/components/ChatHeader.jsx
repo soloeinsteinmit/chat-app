@@ -1,4 +1,12 @@
-import { Avatar, Badge, Button, Chip } from "@nextui-org/react";
+import {
+  Avatar,
+  Badge,
+  Button,
+  Chip,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@nextui-org/react";
 import React from "react";
 import { IoVideocamOutline, IoCallOutline } from "react-icons/io5";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";

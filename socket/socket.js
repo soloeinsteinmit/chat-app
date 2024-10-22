@@ -29,6 +29,13 @@ io.on("connection", (socket) => {
     // Emitting a message to a specific user
     if (user) {
       io.to(user.socketId).emit("getMessage", message);
+      io.to(user.socketId).emit("getNotification", {
+        message: message.message,
+        senderId: message.senderId,
+        receiverId: message.receiverId,
+        isRead: false,
+        date: new Date(),
+      });
     }
     // console.log("message-> ", message);
   });
