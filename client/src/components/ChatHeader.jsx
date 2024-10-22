@@ -2,11 +2,9 @@ import { Avatar, Badge, Button, Chip } from "@nextui-org/react";
 import React from "react";
 import { IoVideocamOutline, IoCallOutline } from "react-icons/io5";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import { randomImage } from "../utils/avatar-images";
 
-const ChatHeader = ({
-  profileImage = "https://i.pravatar.cc/150?u=a0428a2462d826712d",
-  name = "CobbyTrade",
-}) => {
+const ChatHeader = ({ profileImage = randomImage(), name = "CobbyTrade" }) => {
   return (
     <div className="flex-shrink-0 fixed top-0 bg-content1 border-b border-divider px-4 py-4 flex items-center justify-between w-[60%]">
       <div className="flex items-center gap-2">

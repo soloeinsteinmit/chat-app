@@ -1,5 +1,7 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useCallback } from "react";
 import { fetchChats } from "../services/chat-services";
+import axios from "axios";
+import { baseUrl } from "../services/services";
 
 export const ChatContext = createContext();
 
@@ -8,6 +10,44 @@ export const ChatContextProvider = ({ children, user }) => {
   const [isChatLoading, setIsChatLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [chatsError, setChatsError] = useState(null);
+  const [potentialFriends, setPotentialFriend] = useState([]);
+  const [loadingFriends, setLoadingFriends] = useState(false);
+
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        // Get all users
+        setLoadingFriends(true);
+        const response = await axios.get(`${baseUrl}/users`);
+
+        if (response.error) {
+          setLoadingFriends(false);
+          return response || console.log("Error fetching users");
+        }
+
+        // Use response.data to filter
+        const potentialFriend = response.data.filter((u) => {
+          // Skip the current user
+          if (user._id === u._id) return false;
+
+          // Check if the user is already in any of the userChats
+          const isFriend = userChats?.some((chat) =>
+            chat.members.includes(u._id)
+          );
+
+          return !isFriend;
+        });
+
+        setPotentialFriend(potentialFriend);
+        setLoadingFriends(false);
+      } catch (error) {
+        setLoadingFriends(false);
+        return error.message;
+      }
+    };
+
+    getUsers();
+  }, [userChats]);
 
   useEffect(() => {
     /**
@@ -22,7 +62,6 @@ export const ChatContextProvider = ({ children, user }) => {
     const fetchUserChats = async () => {
       if (user?._id) {
         setIsChatLoading(true);
-        console.log("Fetching chats for user ID:", user._id);
         setChatsError(null);
         try {
           const response = await fetchChats(user._id);
@@ -38,14 +77,22 @@ export const ChatContextProvider = ({ children, user }) => {
           setChatsError(error.message);
           setIsChatLoading(false);
         }
-      } else {
-        console.log("User ID is not available.");
       }
     };
 
     fetchUserChats();
   }, [user]);
-  console.log("UserChats:", userChats);
+
+  const createChat = useCallback(async (firstId, secondId) => {
+    const response = await axios.post(`${baseUrl}/chats`, {
+      firstId,
+      secondId,
+    });
+
+    if (response.error) return response;
+
+    setUserChats((prevChats) => [...prevChats, response.data]);
+  }, []);
 
   return (
     <ChatContext.Provider
@@ -55,6 +102,9 @@ export const ChatContextProvider = ({ children, user }) => {
         setIsTyping,
         isTyping,
         chatsError,
+        potentialFriends,
+        loadingFriends,
+        createChat,
       }}
     >
       {children}

@@ -1,10 +1,9 @@
 import { Avatar, Badge } from "@nextui-org/react";
 import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { randomImage } from "../utils/avatar-images";
 
-const ChatInfoContainer = ({
-  profileImage = "https://i.pravatar.cc/150?u=a04258a2462d826712d",
-}) => {
+const ChatInfoContainer = ({ profileImage = randomImage() }) => {
   const { user } = useContext(AuthContext);
 
   return (

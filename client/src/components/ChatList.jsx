@@ -7,6 +7,8 @@ import ChatCard from "./chat-card";
 import { ChatContext } from "../context/ChatContext";
 import ChatSkeleton from "./chat-skeleton";
 import { useFetchFriends } from "../hooks/fetchFriends";
+import PotentialFriends from "./PotentialFriendsCard";
+import { randomImage } from "../utils/avatar-images";
 
 /**
  * A simple component that displays a user avatar and name
@@ -19,21 +21,19 @@ const ChatList = () => {
 
   const { friends } = useFetchFriends(userChats, user);
 
-  console.log("userChats->", userChats);
-
-  console.log("friends->", friends);
-
   if (chatsError) {
     return <div>{chatsError}</div>;
   }
+  const profileImage = randomImage();
+
   return (
-    <div className="border-r border-divider w-1/4  overflow-y-auto">
+    <div className="border-r border-divider w-1/4  overflow-y-auto overflow-x-hidden">
       <div className="flex justify-between items p-4 bg-content1">
         <User
           name={user.username}
           description="Product Designer"
           avatarProps={{
-            src: "https://i.pravatar.cc/150?u=a04258114e2902670",
+            src: profileImage,
             isBordered: true,
             color: "success",
           }}
@@ -54,10 +54,11 @@ const ChatList = () => {
         </div>
       </div>
       <div className="flex flex-col gap-2 py-2">
-        <p className="text-base font-semibold mx-4">Messages</p>
         <Button color="primary" size="sm" className="mx-4">
           Create New Chat
         </Button>
+        <PotentialFriends />
+        <p className="text-base font-semibold mx-4">Messages</p>
         <div className="flex flex-col">
           {isChatLoading ? (
             <div className="flex flex-col gap-3">
