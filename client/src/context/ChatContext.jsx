@@ -2,6 +2,7 @@ import { createContext, useState, useEffect, useCallback } from "react";
 import { fetchChats } from "../services/chat-services";
 import axios from "axios";
 import { baseUrl } from "../services/services";
+import { io } from "socket.io-client";
 
 export const ChatContext = createContext();
 
@@ -18,6 +19,64 @@ export const ChatContextProvider = ({ children, user }) => {
   const [messagesError, setMessagesError] = useState(null);
   const [sendMessageError, setSendMessageError] = useState(null);
   const [newMessage, setNewMessage] = useState(null);
+  const [socket, setSocket] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+
+  //initalize socket
+  useEffect(() => {
+    const newSocket = io("http://localhost:1234");
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [user]);
+
+  // add online users to socket
+  useEffect(() => {
+    if (socket === null) return;
+    socket.emit("addNewUser", user?._id);
+    socket.on("getOnlineUsers", (res) => {
+      setOnlineUsers(res);
+    });
+    return () => {
+      socket.off("getOnlineUsers");
+    };
+  }, [socket]);
+  // console.log("online users -> ", onlineUsers);
+
+  // send message to socket
+  useEffect(() => {
+    if (socket === null) return;
+
+    // check for receiver of the message
+    const receiverId = currentChat?.members?.find((id) => id !== user._id);
+
+    socket.emit("sendMessage", { ...newMessage, receiverId });
+  }, [newMessage]);
+
+  // console.log("newMessage -> ", newMessage);
+
+  //receive message from socket
+  useEffect(() => {
+    if (socket === null) return;
+    socket.on("getMessage", (res) => {
+      if (currentChat?._id !== res?.chatId) {
+        return;
+      }
+      setMessages((prevMessages) => [...prevMessages, res]);
+    });
+    return () => {
+      socket.off("getMessage");
+    };
+  }, [socket, currentChat]);
+
+  useEffect(() => {
+    if (socket === null || currentChat === null) return;
+
+    const receiverId = currentChat.members.find((id) => id !== user._id);
+    socket.emit("chatOpened", { chatId: currentChat._id, receiverId });
+  }, [currentChat, socket]);
 
   useEffect(() => {
     /**
@@ -182,6 +241,9 @@ export const ChatContextProvider = ({ children, user }) => {
         sendMessage,
         sendMessageError,
         newMessage,
+        socket,
+        onlineUsers,
+        setCurrentChat,
       }}
     >
       {children}

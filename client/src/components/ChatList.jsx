@@ -22,7 +22,9 @@ const ChatList = () => {
     chatsError,
     updateCurrentChat,
     currentChat,
+    onlineUsers,
   } = useContext(ChatContext);
+
   const { user, logoutUser } = useContext(AuthContext);
 
   const { friends } = useFetchFriends(userChats, user);
@@ -79,8 +81,15 @@ const ChatList = () => {
                 return (
                   <ChatCard
                     onClick={() => updateCurrentChat(chat)}
-                    key={friend._id}
+                    key={chat._id}
                     name={friend?.username}
+                    isOnline={
+                      onlineUsers?.some(
+                        (onlineUser) => onlineUser?.userId === friend?._id
+                      )
+                        ? "success"
+                        : "default"
+                    }
                     // message={chat?.lastMessage?.text}
                     // time={chat?.lastMessage?.createdAt}
                     // profileImage={friend?.profileImage}

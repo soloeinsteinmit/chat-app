@@ -28,6 +28,7 @@ export const useFetchFriends = (userChats, user) => {
             const response = await axios.get(
               `${baseUrl}/users/getUser/${friendId}`
             );
+            if (!response.data) throw new Error("Friend data not found");
 
             return {
               friend: response.data,

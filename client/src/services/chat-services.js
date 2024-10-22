@@ -19,15 +19,27 @@ const fetchChats = async (userId) => {
   }
 };
 
-const fetchCurrentChatInfo = async (currentChat) => {
+const fetchCurrentChatInfo = async (currentChat, userId) => {
   if (!currentChat) {
-    console.log("currentChat is null");
+    // console.log("currentChat is null");
     return null;
   }
 
   try {
+    const ids = currentChat.members;
+
+    // Find the other member ID that is not equal to the userId
+    const otherMemberId = ids.find((id) => id !== userId);
+
+    // If no other member ID is found, return null
+    if (!otherMemberId) {
+      console.log("No other member found in the current chat");
+      return null;
+    }
+
+    // Fetch the other member's data
     const response = await axios.get(
-      `${baseUrl}/users/getUser/${currentChat.members[1]}`
+      `${baseUrl}/users/getUser/${otherMemberId}`
     );
     return response.data;
   } catch (error) {

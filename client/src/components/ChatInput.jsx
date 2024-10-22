@@ -90,7 +90,7 @@ const ChatInput = () => {
 
     setShowEmojiPicker(false); // Hide the emoji picker after selecting an emoji
   };
-  console.log("message->", message);
+  // console.log("message->", message);
 
   return (
     <div className="flex-shrink-0 sticky bottom-0 left-0 w-full z-50 flex py-5 pl-5 justify-center items-center bg-content1 border-t border-divider">

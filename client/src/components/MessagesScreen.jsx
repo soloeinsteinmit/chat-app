@@ -18,14 +18,14 @@ const MessagesScreen = () => {
   // Fetch current chat info when currentChat changes
   useEffect(() => {
     const fetchInfo = async () => {
-      const info = await fetchCurrentChatInfo(currentChat);
+      const info = await fetchCurrentChatInfo(currentChat, user?._id);
       setCurrentChatInfo(info);
     };
 
     fetchInfo();
   }, [currentChat]);
 
-  console.log("friend->", friends);
+  // console.log("friend->", friends);
 
   if (!currentChat) {
     return (
@@ -47,8 +47,8 @@ const MessagesScreen = () => {
     );
   }
 
-  console.log("currentChat -> ", currentChat);
-  console.log("currentChatInfo -> ", currentChatInfo);
+  // console.log("currentChat -> ", currentChat);
+  // console.log("currentChatInfo -> ", currentChatInfo);
 
   return (
     <div className="w-3/4 flex flex-col justify-between">

@@ -1,6 +1,7 @@
 import { Avatar, Badge } from "@nextui-org/react";
-import React from "react";
+import React, { useContext } from "react";
 import { randomImage } from "../utils/avatar-images";
+import { ChatContext } from "../context/ChatContext";
 
 const ChatCard = ({
   message = "Hello bro",
@@ -9,6 +10,7 @@ const ChatCard = ({
   newMessage = 4,
   profileImage = randomImage(),
   props,
+  isOnline,
   onClick = () => {},
 }) => {
   return (
@@ -20,7 +22,7 @@ const ChatCard = ({
       <div className="flex items-center justify-start gap-2">
         <Badge
           content=""
-          color="success"
+          color={isOnline}
           shape="circle"
           placement="bottom-right"
           size="sm"

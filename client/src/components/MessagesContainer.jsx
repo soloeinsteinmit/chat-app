@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import SenderChatCard from "./SenderChatCard";
 import ReceiverChatCard from "./ReceiverChatCard";
 import { ChatContext } from "../context/ChatContext";
@@ -7,6 +7,29 @@ import moment from "moment";
 import { AuthContext } from "../context/AuthContext";
 
 const MessagesContainer = () => {
+  const { messages, isMessagesLoading, messagesError } =
+    useContext(ChatContext);
+  const { user } = useContext(AuthContext);
+
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    /**
+     * Smoothly scrolls the messages container to the bottom.
+     * @function
+     */
+    const scrollToBottom = () => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    scrollToBottom();
+  }, [messages]);
+
+  /**
+   * Formats a timestamp into a human-readable format.
+   * @param {number|string|Date} createdAt - The timestamp to format.
+   * @returns {string} The formatted timestamp, e.g. "Today, 10:30 AM", "Yesterday, 10:30 AM", "Tuesday, 10:30 AM", or "Sep 18, 2024, 10:30 AM".
+   */
   const formatTimestamp = (createdAt) => {
     const now = moment();
     const messageDate = moment(createdAt);
@@ -26,11 +49,7 @@ const MessagesContainer = () => {
     }
   };
 
-  const { currentChat, messages, isMessagesLoading, messagesError } =
-    useContext(ChatContext);
-  const { user } = useContext(AuthContext);
-
-  console.log("messages->", messages);
+  // console.log("messages->", messages);
   return (
     <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2 items-start justify-end">
       {isMessagesLoading ? (
@@ -64,6 +83,7 @@ const MessagesContainer = () => {
           )}
         </>
       )}
+      <div ref={messagesEndRef}></div>
     </div>
   );
 };

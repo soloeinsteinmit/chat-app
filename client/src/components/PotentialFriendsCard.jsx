@@ -8,11 +8,11 @@ const PotentialFriends = ({
   profileImage = "https://i.pravatar.cc/150?u=a04258a246d826712d",
 }) => {
   const { user } = useContext(AuthContext);
-  const { potentialFriends, loadingFriends, createChat } =
+  const { potentialFriends, loadingFriends, createChat, onlineUsers } =
     useContext(ChatContext);
 
   return (
-    <div className="flex items-center justify-center mt-3 mx-4">
+    <div className="flex items-center justify-start mt-3 mx-4 pl-4">
       {loadingFriends ? (
         <div className="flex -space-x-3">
           <Skeleton className="rounded-full w-10 h-10" />
@@ -22,7 +22,7 @@ const PotentialFriends = ({
           <Skeleton className="rounded-full w-10 h-10" />
         </div>
       ) : (
-        <AvatarGroup isBordered max={6}>
+        <AvatarGroup max={6} isBordered>
           {potentialFriends.map((friend) => (
             <Tooltip
               content={friend.username.split(" ")[0]}
@@ -54,6 +54,13 @@ const PotentialFriends = ({
             >
               <div onClick={() => createChat(user._id, friend._id)}>
                 <Avatar
+                  color={
+                    onlineUsers?.some(
+                      (onlineUser) => onlineUser?.userId === friend?._id
+                    )
+                      ? "success"
+                      : "default"
+                  }
                   showFallback
                   name={friend.username
                     .split(" ")[0]
