@@ -16,7 +16,13 @@ import { randomImage } from "../utils/avatar-images";
  * @returns {ReactElement} A JSX Element
  */
 const ChatList = () => {
-  const { userChats, isChatLoading, chatsError } = useContext(ChatContext);
+  const {
+    userChats,
+    isChatLoading,
+    chatsError,
+    updateCurrentChat,
+    currentChat,
+  } = useContext(ChatContext);
   const { user, logoutUser } = useContext(AuthContext);
 
   const { friends } = useFetchFriends(userChats, user);
@@ -68,9 +74,10 @@ const ChatList = () => {
             </div>
           ) : (
             <>
-              {friends?.map((friend) => {
+              {friends?.map(({ friend, chat }) => {
                 return (
                   <ChatCard
+                    onClick={() => updateCurrentChat(chat)}
                     key={friend._id}
                     name={friend?.username}
                     // message={chat?.lastMessage?.text}

@@ -12,8 +12,18 @@ export const ChatContextProvider = ({ children, user }) => {
   const [chatsError, setChatsError] = useState(null);
   const [potentialFriends, setPotentialFriend] = useState([]);
   const [loadingFriends, setLoadingFriends] = useState(false);
+  const [currentChat, setCurrentChat] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [isMessagesLoading, setIsMessagesLoading] = useState(false);
+  const [messagesError, setMessagesError] = useState(null);
 
   useEffect(() => {
+    /**
+     * Fetches all users and filters out the ones that are already in any of the
+     * userChats. The result is stored in the potentialFriends state.
+     * @returns {Promise<void>} A promise that resolves when the request is completed
+     * or an error message if the request fails.
+     */
     const getUsers = async () => {
       try {
         // Get all users
@@ -83,6 +93,39 @@ export const ChatContextProvider = ({ children, user }) => {
     fetchUserChats();
   }, [user]);
 
+  useEffect(() => {
+    const fetchMessages = async () => {
+      setIsMessagesLoading(true);
+      setMessagesError(null);
+      try {
+        const response = await axios.get(
+          `${baseUrl}/messages/${currentChat?._id}`
+        );
+
+        if (response.error) {
+          setMessagesError(response);
+          setIsMessagesLoading(false);
+        } else {
+          setMessages(response.data);
+          setIsMessagesLoading(false);
+        }
+      } catch (error) {
+        setMessagesError(error.message);
+        setIsMessagesLoading(false);
+      }
+    };
+
+    fetchMessages();
+  }, [currentChat]);
+
+  console.log("messages --->", messages);
+
+  const updateCurrentChat = useCallback((chat) => {
+    setCurrentChat(chat);
+  }, []);
+
+  // console.log("currentChat --->", currentChat);
+
   const createChat = useCallback(async (firstId, secondId) => {
     const response = await axios.post(`${baseUrl}/chats`, {
       firstId,
@@ -105,6 +148,11 @@ export const ChatContextProvider = ({ children, user }) => {
         potentialFriends,
         loadingFriends,
         createChat,
+        updateCurrentChat,
+        currentChat,
+        messages,
+        isMessagesLoading,
+        messagesError,
       }}
     >
       {children}

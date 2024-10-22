@@ -1,10 +1,13 @@
 import { Button, Textarea } from "@nextui-org/react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FaRegImage } from "react-icons/fa6";
 import { LuPlusCircle } from "react-icons/lu";
 import SendIcon from "../assets/SendIcon";
+import { ChatContext } from "../context/ChatContext";
 
 const ChatInput = () => {
+
+  const { currentChat } = useContext(ChatContext);
   const emojis = [
     "😜",
     "😂",

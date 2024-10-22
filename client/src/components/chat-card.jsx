@@ -7,9 +7,15 @@ const ChatCard = ({
   time = "12mins",
   newMessage = 4,
   profileImage = "https://i.pravatar.cc/150?u=a04258a2462d826712d",
+  props,
+  onClick = () => {},
 }) => {
   return (
-    <div className="flex justify-between items-center px-4 py-3 hover:bg-content2 transition active:scale-95">
+    <div
+      className="flex justify-between items-center px-4 py-3 hover:bg-content2 transition active:scale-95"
+      onClick={onClick}
+      {...props}
+    >
       <div className="flex items-center justify-start gap-2">
         <Badge
           content=""

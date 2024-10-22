@@ -10,14 +10,11 @@ const PotentialFriends = ({
   const { user } = useContext(AuthContext);
   const { potentialFriends, loadingFriends, createChat } =
     useContext(ChatContext);
-  console.log(randomImage);
 
   return (
     <div className="flex items-center justify-center mt-3 mx-4">
       {loadingFriends ? (
         <div className="flex -space-x-3">
-          <Skeleton className="rounded-full w-10 h-10" />
-          <Skeleton className="rounded-full w-10 h-10" />
           <Skeleton className="rounded-full w-10 h-10" />
           <Skeleton className="rounded-full w-10 h-10" />
           <Skeleton className="rounded-full w-10 h-10" />

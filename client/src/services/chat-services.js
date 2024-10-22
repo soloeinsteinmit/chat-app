@@ -19,4 +19,21 @@ const fetchChats = async (userId) => {
   }
 };
 
-export { fetchChats };
+const fetchCurrentChatInfo = async (currentChat) => {
+  if (!currentChat) {
+    console.log("currentChat is null");
+    return null;
+  }
+
+  try {
+    const response = await axios.get(
+      `${baseUrl}/users/getUser/${currentChat.members[1]}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching current chat info:", error);
+    return null;
+  }
+};
+
+export { fetchChats, fetchCurrentChatInfo };
