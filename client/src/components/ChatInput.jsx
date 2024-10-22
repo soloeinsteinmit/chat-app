@@ -1,13 +1,19 @@
 import { Button, Textarea } from "@nextui-org/react";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { FaRegImage } from "react-icons/fa6";
 import { LuPlusCircle } from "react-icons/lu";
 import SendIcon from "../assets/SendIcon";
 import { ChatContext } from "../context/ChatContext";
+import EmojiPicker from "emoji-picker-react";
+import { AuthContext } from "../context/AuthContext";
 
 const ChatInput = () => {
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false); // New state to manage emoji picker visibility
 
-  const { currentChat } = useContext(ChatContext);
+  const { currentChat, sendMessage } = useContext(ChatContext);
+  const { user } = useContext(AuthContext);
   const emojis = [
     "😜",
     "😂",
@@ -40,14 +46,6 @@ const ChatInput = () => {
 
   const [emoji, setEmoji] = useState("🤪");
 
-  const getCurrentFormattedTime = () => {
-    const date = new Date();
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const seconds = date.getSeconds();
-    return `${hours}:${minutes}:${seconds}`;
-  };
-
   const handleMouseEnter = () => {
     const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
     setEmoji(randomEmoji); // Set a random emoji from the array
@@ -58,23 +56,47 @@ const ChatInput = () => {
   };
 
   const handleSend = async () => {
-    const formattedTime = getCurrentFormattedTime();
+    // Handle sending the message here
   };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-
-      handleSend();
+      sendMessage(currentChat._id, user._id, message, setMessage);
     }
   };
 
+  const toggleEmojiPicker = () => {
+    setShowEmojiPicker((prev) => !prev); // Toggle the emoji picker visibility
+  };
+  const emojiPickerRef = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        emojiPickerRef.current &&
+        !emojiPickerRef.current.contains(event.target)
+      ) {
+        setShowEmojiPicker(false);
+      }
+    };
+    window.addEventListener("click", handleClickOutside);
+    return () => {
+      window.removeEventListener("click", handleClickOutside);
+    };
+  }, [emojiPickerRef]);
+
+  const handleEmojiClick = (emoji) => {
+    setMessage((prevMessage) => prevMessage + emoji.emoji);
+
+    setShowEmojiPicker(false); // Hide the emoji picker after selecting an emoji
+  };
+  console.log("message->", message);
+
   return (
-    <div className="flex-shrink-0 sticky bottom-0 left-0  w-full z-50 flex py-5 pl-5 justify-center items-center bg-content1 border-t border-divider">
+    <div className="flex-shrink-0 sticky bottom-0 left-0 w-full z-50 flex py-5 pl-5 justify-center items-center bg-content1 border-t border-divider">
       <Textarea
-        className=" w-full transition mr-2"
+        className="w-full transition mr-2"
         onKeyDown={handleKeyPress}
-        //   size="sm"
         style={{ whiteSpace: "pre-line" }} // Preserve white spaces and line breaks
         classNames={{
           innerWrapper: "items-center",
@@ -82,35 +104,44 @@ const ChatInput = () => {
           input: "text-sm",
         }}
         placeholder="Write a message..."
-        //   onChange={handleChange}
-        //   value={inputMessage}
+        onChange={(e) => setMessage(e.target.value)}
+        value={message}
         variant="faded"
         minRows={1}
         radius="md"
         startContent={
-          <Button
-            isIconOnly
-            className="text-lg border-none"
-            size="sm"
-            variant="faded"
-            radius="full"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            aria-label="emoji"
-          >
-            {emoji}
-          </Button>
+          <div className="relative">
+            <Button
+              isIconOnly
+              className="text-lg border-none"
+              size="sm"
+              variant="faded"
+              radius="full"
+              onClick={toggleEmojiPicker} // Show/hide emoji picker when clicked
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              aria-label="emoji"
+            >
+              {emoji}
+            </Button>
+            <div ref={emojiPickerRef} className="absolute bottom-full mb-2">
+              {showEmojiPicker && (
+                <EmojiPicker onEmojiClick={handleEmojiClick} theme="auto" />
+              )}
+            </div>
+          </div>
         }
         endContent={
-          <div className="flex  h-full items-end ">
+          <div className="flex h-full items-end">
             <Button
               isIconOnly
               color="primary"
               variant="shadow"
               size="sm"
-              onClick={handleSend}
+              onClick={() =>
+                sendMessage(currentChat._id, user._id, message, setMessage)
+              }
               aria-label="send"
-              // isDisabled={!inputMessage.trim()}
             >
               <SendIcon />
             </Button>
@@ -124,7 +155,6 @@ const ChatInput = () => {
           size="sm"
           onClick={handleSend}
           aria-label="send"
-          // isDisabled={!inputMessage.trim()}
         >
           <LuPlusCircle className="text-lg" />
         </Button>
@@ -134,7 +164,6 @@ const ChatInput = () => {
           size="sm"
           onClick={handleSend}
           aria-label="send"
-          // isDisabled={!inputMessage.trim()}
         >
           <FaRegImage className="text-lg" />
         </Button>

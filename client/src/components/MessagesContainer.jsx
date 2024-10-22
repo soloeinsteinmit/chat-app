@@ -4,11 +4,33 @@ import ReceiverChatCard from "./ReceiverChatCard";
 import { ChatContext } from "../context/ChatContext";
 import { Spinner } from "@nextui-org/react";
 import moment from "moment";
+import { AuthContext } from "../context/AuthContext";
 
 const MessagesContainer = () => {
+  const formatTimestamp = (createdAt) => {
+    const now = moment();
+    const messageDate = moment(createdAt);
+
+    if (messageDate.isSame(now, "day")) {
+      // Same day - show "Today, 10:30 AM"
+      return `Today, ${messageDate.format("h:mm A")}`;
+    } else if (messageDate.isSame(now.subtract(1, "day"), "day")) {
+      // Previous day - show "Yesterday, 10:30 AM"
+      return `Yesterday, ${messageDate.format("h:mm A")}`;
+    } else if (messageDate.isSame(now, "week")) {
+      // Same week - show day of the week, e.g. "Tuesday, 10:30 AM"
+      return `${messageDate.format("dddd")}, ${messageDate.format("h:mm A")}`;
+    } else {
+      // Older messages - show full date, e.g. "Sep 18, 2024, 10:30 AM"
+      return messageDate.format("MMM D, YYYY, h:mm A");
+    }
+  };
+
   const { currentChat, messages, isMessagesLoading, messagesError } =
     useContext(ChatContext);
+  const { user } = useContext(AuthContext);
 
+  console.log("messages->", messages);
   return (
     <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2 items-start justify-end">
       {isMessagesLoading ? (
@@ -25,16 +47,21 @@ const MessagesContainer = () => {
         </div>
       ) : (
         <>
-          {messages.map((message) => (
-            <div key={message._id}>
-              <ReceiverChatCard
+          {messages.map((message, index) =>
+            message?.senderId === user._id ? (
+              <SenderChatCard
+                key={index}
                 message={message.message}
-                timestamp={`${moment(message.createdAt).format(
-                  "dddd"
-                )}, ${moment(message.createdAt).format("h:mm A")}`}
+                timestamp={formatTimestamp(message.createdAt)}
               />
-            </div>
-          ))}
+            ) : (
+              <ReceiverChatCard
+                key={index}
+                message={message.message}
+                timestamp={formatTimestamp(message.createdAt)}
+              />
+            )
+          )}
         </>
       )}
     </div>
@@ -42,10 +69,3 @@ const MessagesContainer = () => {
 };
 
 export default MessagesContainer;
-
-{
-  /* <SenderChatCard />
-       <ReceiverChatCard />
-      <ReceiverChatCard message="What was the content of the message?😒" />
-      <SenderChatCard message="After investigating the issue, I found the bug was due to a race condition in the asynchronous data fetching process. To fix this, I implemented a mutex lock to ensure data integrity and prevent the race condition from occurring again." /> */
-}

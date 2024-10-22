@@ -63,6 +63,7 @@ const ChatList = () => {
         <Button color="primary" size="sm" className="mx-4">
           Create New Chat
         </Button>
+        <p className="text-base font-semibold mx-4">Potential Friends</p>
         <PotentialFriends />
         <p className="text-base font-semibold mx-4">Messages</p>
         <div className="flex flex-col">

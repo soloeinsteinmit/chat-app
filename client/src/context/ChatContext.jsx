@@ -16,6 +16,8 @@ export const ChatContextProvider = ({ children, user }) => {
   const [messages, setMessages] = useState([]);
   const [isMessagesLoading, setIsMessagesLoading] = useState(false);
   const [messagesError, setMessagesError] = useState(null);
+  const [sendMessageError, setSendMessageError] = useState(null);
+  const [newMessage, setNewMessage] = useState(null);
 
   useEffect(() => {
     /**
@@ -94,6 +96,13 @@ export const ChatContextProvider = ({ children, user }) => {
   }, [user]);
 
   useEffect(() => {
+    /**
+     * Fetches all messages for the currently selected chat from the server.
+     * Sets the isMessagesLoading state to true while the request is in progress.
+     * If the request is successful, it sets the messages state to the response data.
+     * If the request fails, it sets the messagesError state to the error message.
+     * In any case, it sets the isMessagesLoading state to false when the request is complete.
+     */
     const fetchMessages = async () => {
       setIsMessagesLoading(true);
       setMessagesError(null);
@@ -118,7 +127,24 @@ export const ChatContextProvider = ({ children, user }) => {
     fetchMessages();
   }, [currentChat]);
 
-  console.log("messages --->", messages);
+  const sendMessage = useCallback(
+    async (currentChatId, senderId, inputMessage, setInputMessage) => {
+      if (!inputMessage) return console.log("Please enter a message");
+
+      const response = await axios.post(`${baseUrl}/messages`, {
+        chatId: currentChatId,
+        senderId: senderId,
+        message: inputMessage,
+      });
+
+      if (response.error) return setSendMessageError(response.error);
+
+      setNewMessage(response.data);
+      setMessages((prevMessages) => [...prevMessages, response.data]);
+      setInputMessage("");
+    },
+    []
+  );
 
   const updateCurrentChat = useCallback((chat) => {
     setCurrentChat(chat);
@@ -153,6 +179,9 @@ export const ChatContextProvider = ({ children, user }) => {
         messages,
         isMessagesLoading,
         messagesError,
+        sendMessage,
+        sendMessageError,
+        newMessage,
       }}
     >
       {children}
