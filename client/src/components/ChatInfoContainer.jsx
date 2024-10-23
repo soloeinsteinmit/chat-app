@@ -8,7 +8,7 @@ const ChatInfoContainer = ({ profileImage = randomImage() }) => {
   const { user } = useContext(AuthContext);
 
   return (
-    <div className="w-full border-l h-screen border-divider p-4">
+    <div className=" w-full border-l h-screen border-divider p-4 ">
       <div className="p-4  flex items-center justify-end">
         <Notifications />
       </div>

@@ -51,9 +51,9 @@ const MessagesScreen = () => {
   // console.log("currentChatInfo -> ", currentChatInfo);
 
   return (
-    <div className="w-3/4 flex flex-col justify-between">
+    <div className=" w-full flex flex-col justify-between">
       <ChatHeader name={currentChatInfo?.username} />
-      <div className="flex-grow flex justify-center mt-[80px]">
+      <div className="flex-grow flex w-full justify-center mt-[80px]">
         <MessagesContainer />
       </div>
       <ChatInput />

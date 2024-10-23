@@ -15,8 +15,14 @@ import { unreadNotification } from "../utils/unreadNotification";
 import { formatTimestamp } from "../utils/utils";
 
 export const Notifications = () => {
-  const { notifications, userChart, allUsers, onlineUsers } =
-    useContext(ChatContext);
+  const {
+    notifications,
+    userChats,
+    allUsers,
+    onlineUsers,
+    markAllNotificationsAsRead,
+    markNotificationAsRead,
+  } = useContext(ChatContext);
   const { user } = useContext(AuthContext);
 
   const unreadNotifications = unreadNotification(notifications);
@@ -26,15 +32,15 @@ export const Notifications = () => {
   });
   const notificationCount = unreadNotifications.length.toString();
 
-  console.log("modifiedNotifications -> ", modifiedNotifications);
-  console.log("unreadNotifications -> ", unreadNotifications);
+  // console.log("modifiedNotifications -> ", modifiedNotifications);
+  // console.log("unreadNotifications -> ", unreadNotifications);
 
   return (
     <Popover
       showArrow
       backdrop="opaque"
       placement="left"
-      className="w-[450px]"
+      className="w-[450px] overflow-y-auto h-[500px] overflow-x-hidden"
       classNames={{
         base: [
           // arrow color
@@ -62,9 +68,9 @@ export const Notifications = () => {
             isIconOnly
             aria-label="notifications"
             variant="shadow"
-            size="lg"
+            size="md"
           >
-            <NotificationIcon size={32} />
+            <NotificationIcon size={24} />
           </Button>
         </PopoverTrigger>
       </Badge>
@@ -75,7 +81,14 @@ export const Notifications = () => {
               <h3 className="text-xl font-bold" {...titleProps}>
                 Nofications🔔
               </h3>
-              <Button variant="flat" size="sm" color="warning">
+              <Button
+                variant="flat"
+                size="sm"
+                color="warning"
+                onClick={() => {
+                  markAllNotificationsAsRead(notifications);
+                }}
+              >
                 Mark all as read
               </Button>
             </div>
@@ -86,6 +99,14 @@ export const Notifications = () => {
                 modifiedNotifications.map((notification, index) => (
                   <Notifcationcard
                     key={index}
+                    onClick={() =>
+                      markNotificationAsRead(
+                        notification,
+                        userChats,
+                        user,
+                        notifications
+                      )
+                    }
                     senderName={notification.senderName}
                     // profileImage={notification.sender.profileImage}
                     name={notification.senderName}

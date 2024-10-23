@@ -230,6 +230,7 @@ export const ChatContextProvider = ({ children, user }) => {
   );
 
   const updateCurrentChat = useCallback((chat) => {
+    // e.preventDefault();
     setCurrentChat(chat);
   }, []);
 
@@ -245,6 +246,70 @@ export const ChatContextProvider = ({ children, user }) => {
 
     setUserChats((prevChats) => [...prevChats, response.data]);
   }, []);
+
+  // mark all notifications as read
+  const markAllNotificationsAsRead = useCallback(async (notifications) => {
+    const modifyNotifications = notifications.map((notif) => {
+      return {
+        ...notif,
+        isRead: true,
+      };
+    });
+    setNotifications(modifyNotifications);
+  }, []);
+
+  const markNotificationAsRead = useCallback(
+    (notification, userChats, user, notifications) => {
+      const desiredChat = userChats.find((chat) => {
+        const chatMembers = [user._id, notification.senderId];
+        const isDesiredChat = chat?.members.every((member) => {
+          return chatMembers.includes(member);
+        });
+
+        return isDesiredChat;
+      });
+
+      //mark nofication as read
+      const modifiedNotifications = notifications.map((notif) => {
+        if (notification.senderId === notif.senderId) {
+          return {
+            ...notification,
+            isRead: true,
+          };
+        } else {
+          return notif;
+        }
+      });
+
+      // update current chat
+      updateCurrentChat(desiredChat);
+      setNotifications(modifiedNotifications);
+    },
+    []
+  );
+
+  const markThisUserNotificationAsRead = useCallback(
+    (thisUserNotification, notifications) => {
+      const modifiedNotifications = notifications.map((notif) => {
+        let notification;
+
+        thisUserNotification.forEach((userNotification) => {
+          if (userNotification.senderId === notif.senderId) {
+            notification = {
+              ...notif,
+              isRead: true,
+            };
+          } else {
+            notification = notif;
+          }
+        });
+
+        return notification;
+      });
+      setNotifications(modifiedNotifications);
+    },
+    []
+  );
 
   return (
     <ChatContext.Provider
@@ -270,6 +335,9 @@ export const ChatContextProvider = ({ children, user }) => {
         setCurrentChat,
         notifications,
         allUsers,
+        markAllNotificationsAsRead,
+        markNotificationAsRead,
+        markThisUserNotificationAsRead,
       }}
     >
       {children}

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { baseUrl } from "./services";
 import axios from "axios";
 
@@ -47,5 +48,25 @@ const fetchCurrentChatInfo = async (currentChat, userId) => {
     return null;
   }
 };
+/**
+ * Retrieves the latest message for a given chat.
+ *
+ * @param {Object} chat - The chat object containing the chat ID.
+ *
+ * @returns {Promise<Object>} A promise that resolves with the latest message
+ * object or logs an error if the request fails.
+ */
+const getLastestMessage = async (chat) => {
+  try {
+    const response = await axios.get(`${baseUrl}/messages/${chat?._id}`);
+    console.log(chat?._id);
+    console.log("response -> ", response.data);
 
-export { fetchChats, fetchCurrentChatInfo };
+    if (response.error) return console.log(response.error);
+
+    return response.data[response?.data.length - 1];
+  } catch (error) {
+    console.log(error);
+  }
+};
+export { fetchChats, fetchCurrentChatInfo, getLastestMessage };

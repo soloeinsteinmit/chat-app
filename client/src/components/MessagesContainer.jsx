@@ -38,7 +38,7 @@ const MessagesContainer = () => {
           <p>Error loading messages: {messagesError}</p>
         </div>
       ) : messages.length === 0 ? (
-        <div className="w-full flex items-center justify-center text-gray-500">
+        <div className="w-full flex-grow flex items-center justify-center text-gray-500">
           <p>You don’t have any messages with this user yet.</p>
         </div>
       ) : (
