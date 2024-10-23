@@ -92,7 +92,6 @@ export const ChatContextProvider = ({ children, user }) => {
       socket.off("getNotification");
     };
   }, [socket, currentChat]);
-  console.log("notifications -> ", notifications);
 
   useEffect(() => {
     if (socket === null || currentChat === null) return;
@@ -165,6 +164,12 @@ export const ChatContextProvider = ({ children, user }) => {
             setChatsError(response);
             setIsChatLoading(false);
           } else {
+            console.log("unordered response -> ", response);
+            // sort chats by latest message
+            response.sort(
+              (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+            );
+            console.log("orderd response -> ", response);
             setUserChats(response);
             setIsChatLoading(false);
           }
@@ -176,7 +181,7 @@ export const ChatContextProvider = ({ children, user }) => {
     };
 
     fetchUserChats();
-  }, [user]);
+  }, [user, notifications]);
 
   useEffect(() => {
     /**

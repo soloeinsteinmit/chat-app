@@ -59,8 +59,6 @@ const fetchCurrentChatInfo = async (currentChat, userId) => {
 const getLastestMessage = async (chat) => {
   try {
     const response = await axios.get(`${baseUrl}/messages/${chat?._id}`);
-    console.log(chat?._id);
-    console.log("response -> ", response.data);
 
     if (response.error) return console.log(response.error);
 

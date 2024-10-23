@@ -24,19 +24,19 @@ const ChatList = () => {
     isChatLoading,
     chatsError,
     updateCurrentChat,
-    currentChat,
     newMessage,
     onlineUsers,
     notifications,
     markThisUserNotificationAsRead,
   } = useContext(ChatContext);
 
+  console.log("userchats-> ", userChats);
+
   const [latestMessages, setLatestMessages] = useState({});
 
   const { user, logoutUser } = useContext(AuthContext);
 
   const { friends } = useFetchFriends(userChats, user);
-  // console.log("friends -> ", friends);
 
   const truncatedText = (text) => {
     if (text.length > 20) {
@@ -127,7 +127,6 @@ const ChatList = () => {
               );
 
               const latestMessage = latestMessages[chat?._id];
-              console.log("latestMessage -> ", latestMessage);
 
               return (
                 <ChatCard
@@ -158,8 +157,8 @@ const ChatList = () => {
                   message={latestMessage?.message || "No messages yet"}
                   time={
                     latestMessage
-                      ? formatTimestamp(latestMessage?.createdAt).split(",")[0]
-                      : ""
+                      ? formatTimestamp(latestMessage?.createdAt).split(",")[1]
+                      : formatTimestamp(new Date()).split(",")[1]
                   }
                 />
               );
